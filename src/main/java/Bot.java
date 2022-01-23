@@ -3,12 +3,9 @@ import discord4j.common.util.Snowflake;
 import discord4j.core.*;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Message;
-import discord4j.core.object.entity.channel.Channel;
 import discord4j.core.object.entity.channel.MessageChannel;
 import discord4j.rest.entity.RestChannel;
 
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 
@@ -17,8 +14,7 @@ import java.util.*;
 
 
 public class Bot {
-    private static Snowflake channel_id;
-    private static HashMap<String, Reminder> ReminderList = new HashMap<>();
+    private static HashMap<String, Memo> MemoList = new HashMap<>();
     private static boolean running;
 
     public static void main(String[] args) {
@@ -34,11 +30,11 @@ public class Bot {
                     String current = dtf.format(LocalDateTime.now());
                     System.out.println(current);
                     System.out.flush();
-                    if (ReminderList.containsKey(current)) {
-                        Reminder current_reminder= ReminderList.get(current);
-                        RestChannel destination_msg = client.getChannelById(current_reminder.getChannel_id());
-                        destination_msg.createMessage(current_reminder.toString()).block();
-                        ReminderList.remove(current);
+                    if (MemoList.containsKey(current)) {
+                        Memo current_memo= MemoList.get(current);
+                        RestChannel destination_msg = client.getChannelById(current_memo.getChannel_id());
+                        destination_msg.createMessage(current_memo.toString()).block();
+                        MemoList.remove(current);
                     }
                     Thread.sleep(1000);
                 }
@@ -48,17 +44,18 @@ public class Bot {
 
        clock.start();
 
-       System.out.println("Hey");
-
 
         gateway.on(MessageCreateEvent.class).subscribe(event -> {
             final Message message = event.getMessage();
             final String messageText = message.getContent();
             Snowflake temp = event.getMessage().getChannelId();
-            channel_id = temp;
 
+            if (messageText.equals("!cat".toLowerCase())) {
+                final MessageChannel channel = message.getChannel().block();
+                channel.createMessage("https://media4.giphy.com/media/f8ywYgttpGzzVPH5AO/giphy.gif").block();
+            }
 
-            if (messageText.length() >= 9 && "!reminder".equals(messageText.toLowerCase().substring(0, messageText.indexOf(" ")))) {
+            if (messageText.length() >= 9 && "!memo".equals(messageText.toLowerCase().substring(0, messageText.indexOf(" ")))) {
 
                 final MessageChannel channel = message.getChannel().block();
                 String date = messageText.substring(messageText.indexOf(" "));
@@ -84,16 +81,12 @@ public class Bot {
                 DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
                 String current = dtf2.format(LocalDateTime.now());
 
-                // LocalDate parsedDate = LocalDate.parse(date, ofLocalizedDateTime(MEDIUM,MEDIUM));
-
-                //channel.createMessage("Reminder set for " + c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR) + " at " + c.get(Calendar.HOUR_OF_DAY) + "h" + c.get(Calendar.MINUTE)).block();
-                String tempReminderTime = c.get(Calendar.DAY_OF_MONTH) + "/"
+                String tempMemoTime = c.get(Calendar.DAY_OF_MONTH) + "/"
                         + ((c.get(Calendar.MONTH) + 1) < 10 ? "0" + (c.get(Calendar.MONTH) + 1) : (c.get(Calendar.MONTH) + 1)) +
                         "/" + c.get(Calendar.YEAR) + " " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE);
-                System.out.println(temp.toString());
-                ReminderList.put(tempReminderTime, new Reminder("Input reminder", temp));
+                MemoList.put(tempMemoTime, new Memo("Input memo", temp));
 
-                channel.createMessage("Reminder set for " + tempReminderTime + " , now: " + current).block();
+                channel.createMessage("Memo set for " + tempMemoTime + " , now: " + current).block();
             }
 
 
