@@ -101,57 +101,67 @@ public class Bot {
                     dateValue.setMinutes(Integer.parseInt(minute));
 
 
-
-                if(dateValue.before(tempDate)){
-                    c.setTime(dateValue);
-                    Calendar tempCalendar = new GregorianCalendar();
-
                     if(matchComplex){
-                        String[] customDate = userInput[1].split("/");
+                        String[] customDate = userInput[2].split("/");
 
                         int year = Integer.parseInt(customDate[2]) < 100 ? 2000 + Integer.parseInt(customDate[2]) : Integer.parseInt(customDate[2]);
                         int month = Integer.parseInt(customDate[1]) - 1;
                         int day = Integer.parseInt(customDate[0]);
-
                         c.set(year, month, day, dateValue.getHours(), dateValue.getMinutes());;
-
-                    }else{
-                        tempCalendar.setTime(c.getTime());
-
-
-
                     }
+                        if(dateValue.before(tempDate)){
+                            c.setTime(dateValue);
+                            Calendar tempCalendar = new GregorianCalendar();
+
+                            if(matchComplex){
+                                String[] customDate = userInput[2].split("/");
+
+                                int year = Integer.parseInt(customDate[2]) < 100 ? 2000 + Integer.parseInt(customDate[2]) : Integer.parseInt(customDate[2]);
+                                int month = Integer.parseInt(customDate[1]) - 1;
+                                int day = Integer.parseInt(customDate[0]);
+
+                                c.set(year, month, day, dateValue.getHours(), dateValue.getMinutes());;
+
+                            }else{
+                                tempCalendar.setTime(c.getTime());
+
+
+
+                            }
 
 
 
 
-                    tempCalendar.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH) + 1);
+                            tempCalendar.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
 
-                    c.set(tempCalendar.get(Calendar.YEAR), tempCalendar.get(Calendar.MONTH), tempCalendar.get(Calendar.DAY_OF_MONTH));
+                            c.set(tempCalendar.get(Calendar.YEAR), tempCalendar.get(Calendar.MONTH), tempCalendar.get(Calendar.DAY_OF_MONTH)+1);
 
-                }else {
-                    if(matchComplex){
+                        }else {
+                            if(matchComplex){
 
-                        String[] customDate = userInput[2].split("/");
-
-
-                        int year = Integer.parseInt(customDate[2]) < 100 ? 2000 + Integer.parseInt(customDate[2]) : Integer.parseInt(customDate[2]);
-                        int month = Integer.parseInt(customDate[1]) -1;
-                        int day = Integer.parseInt(customDate[0]);
-
-                        c.set(year, month, day, dateValue.getHours(), dateValue.getMinutes());
-
-                    }else{
-                        c.setTime(dateValue);
+                                String[] customDate = userInput[2].split("/");
 
 
+                                int year = Integer.parseInt(customDate[2]) < 100 ? 2000 + Integer.parseInt(customDate[2]) : Integer.parseInt(customDate[2]);
+                                int month = Integer.parseInt(customDate[1]) -1;
+                                int day = Integer.parseInt(customDate[0]);
+
+                                c.set(year, month, day, dateValue.getHours(), dateValue.getMinutes());
+
+                            }else{
+                                c.setTime(dateValue);
 
 
 
-                    }
 
 
-                }
+                            }
+
+
+                        }
+
+
+
 
 
 
