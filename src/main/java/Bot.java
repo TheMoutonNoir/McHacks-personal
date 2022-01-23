@@ -84,6 +84,7 @@ public class Bot {
                     if (date.charAt(i) == ':') {
                         hour = date.substring(1, i);
                         minute = date.substring(i + 1, i+3);
+                        break;
                     }
                 }
 
